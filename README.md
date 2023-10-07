@@ -18,3 +18,5 @@ The implementation here caches frames after render and tracks the origin of the 
 early prototype, no guarantee is given about the stability of the API.
 
 But it works!
+
+https://github.com/Frabjous-Studios/stackedsprite/assets/22620342/41f01c3c-dfaa-4cac-b33e-2e758f5922f2
