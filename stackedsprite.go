@@ -25,14 +25,16 @@ type StackedSprite struct {
 	needsReframe bool
 }
 
-// NewStackedSprite returns a new stacked sprite which uses the provided slices.
+// NewStackedSprite returns a new stacked sprite which uses the provided slices. The origin of the sprite is always
+// the center of the provided slices.
 func NewStackedSprite(slices []*image.NRGBA) *StackedSprite {
 	if len(slices) == 0 {
 		return nil
 	}
 	dx, dy := slices[0].Bounds().Dx(), slices[0].Bounds().Dy()
-	w := int(math.Ceil(math.Sqrt2 * float64(dx)))
-	h := int(math.Ceil(math.Sqrt2*float64(dy) + float64(len(slices))))
+	// get the largest size of the image after rotation.
+	w := int(math.Ceil(dist(dx, dy)))
+	h := int(math.Ceil(dist(dx, dy) + float64(len(slices))))
 	buf := ebiten.NewImage(w, h)
 	var images []*ebiten.Image
 	for _, slice := range slices {
@@ -45,6 +47,11 @@ func NewStackedSprite(slices []*image.NRGBA) *StackedSprite {
 	}
 }
 
+func dist(x, y int) float64 {
+	return math.Sqrt(float64(x*x + y*y))
+}
+
+// DrawTo draws this sprite to the screen.
 func (s *StackedSprite) DrawTo(screen *ebiten.Image) {
 	if s.needsReframe {
 		s.reframe()
@@ -100,10 +107,12 @@ func (s *StackedSprite) MoveZ(amt float64) {
 	s.z = s.z + int(pz)
 }
 
+// Origin returns the origin of this sprite as an offset from the upper-left corner of the frame. The
 func (s *StackedSprite) Origin() (float64, float64) {
 	return float64(s.frame.Bounds().Dx() / 2), float64(s.frame.Bounds().Dy()/2 + len(s.slices))
 }
 
+// reframe redraws the cached frame. It should only be used when the stacked sprite has been rotated.
 func (s *StackedSprite) reframe() {
 	s.frame.Clear()
 	opt := &ebiten.DrawImageOptions{}
