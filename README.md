@@ -18,5 +18,3 @@ The implementation here caches frames after render and tracks the origin of the 
 early prototype, no guarantee is given about the stability of the API.
 
 But it works!
-
-!![Demo reel](./JankyCar.m4v)
